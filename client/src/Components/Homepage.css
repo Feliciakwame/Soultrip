@@ -1,0 +1,39 @@
+.homepage {
+  background: linear-gradient(to right, #ffe0f0, #ffd6ec);
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  color: #b30059;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.homepage-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #ff66a3;
+  text-shadow: 1px 1px 2px #fff0f5;
+}
+
+.homepage-subtext {
+  font-size: 1.3rem;
+  color: #800040;
+  max-width: 600px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+@media screen and (max-width: 600px) {
+  .homepage-title {
+    font-size: 2rem;
+  }
+
+  .homepage-subtext {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+}

@@ -1,0 +1,63 @@
+.journal {
+  max-width: 1000px;
+  max-height: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffe6f0;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 20px rgba(255, 182, 193, 0.4);
+  font-family: "Poppins", sans-serif;
+}
+
+.journal h2 {
+  color: #e75480;
+  font-size: 2rem;
+  text-align: center;
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+}
+
+.journal form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.journal input,
+.journal textarea {
+  padding: 1rem;
+  max-width: 1000px;
+  max-height: 1000px;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1rem;
+  background: #fff0f5;
+}
+
+.journal button {
+  background: #ff69b4;
+  color: white;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.journal button:hover {
+  background: #ff1493;
+  transition-duration: 0.3;
+}
+
+.entry-list {
+  margin-top: 2rem;
+}
+
+.entry-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(255, 192, 203, 0.3);
+}

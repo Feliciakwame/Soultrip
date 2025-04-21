@@ -1,0 +1,65 @@
+.safety-container {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #fff0f5;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.safety-container h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #d63384;
+}
+
+.subtitle {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #6c757d;
+}
+
+.safety-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.check-in-btn,
+.emergency-btn {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.check-in-btn {
+  background-color: #20c997;
+  color: white;
+}
+
+.emergency-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.check-in-btn:hover {
+  background-color: #198754;
+}
+
+.emergency-btn:hover {
+  background-color: #c82333;
+}
+
+.safety-info {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  font-size: 0.95rem;
+  color: #333;
+}
