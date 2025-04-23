@@ -1,65 +1,68 @@
 .safety-container {
-  max-width: 600px;
+  max-width: 500px;
   margin: 3rem auto;
   padding: 2rem;
-  background-color: #fff0f5;
-  border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background-color: #f0c6ea;
+  border: 2px solid #c45409;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
   text-align: center;
 }
 
-.safety-container h2 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #d63384;
+.safety-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #f27059;
 }
 
-.subtitle {
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  color: #6c757d;
+.location-card {
+  background-color: #f7e0f5;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #fbd1c4;
+  box-shadow: 0 2px 6px rgba(242, 112, 89, 0.1);
 }
 
-.safety-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+.coordinates {
+  font-size: 1.1rem;
+  color: #444;
+  margin-top: 1rem;
 }
 
-.check-in-btn,
-.emergency-btn {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  border-radius: 12px;
+.coordinates span {
+  font-weight: bold;
+  color: #f27059;
+}
+
+.share-button {
+  margin-top: 1.2rem;
+  background-color: #f27059;
   border: none;
+  color: white;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
-.check-in-btn {
-  background-color: #20c997;
-  color: white;
+.share-button:hover {
+  background-color: #e15d47;
 }
 
-.emergency-btn {
-  background-color: #dc3545;
-  color: white;
+.shared-confirm {
+  color: green;
+  font-weight: bold;
+  margin-top: 0.8rem;
 }
 
-.check-in-btn:hover {
-  background-color: #198754;
+.loading-text {
+  color: #888;
+  font-style: italic;
 }
 
-.emergency-btn:hover {
-  background-color: #c82333;
-}
-
-.safety-info {
-  background-color: #fff;
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid #dee2e6;
-  font-size: 0.95rem;
-  color: #333;
+.error-text {
+  color: red;
+  font-weight: bold;
 }

@@ -7,6 +7,9 @@ journal_bp=Blueprint('journal_bp',__name__)
 def get_entries():
     entries = JournalEntry.query.all()
     return jsonify([entry.to_dict() for entry in entries]),200
+
+
+    
 @journal_bp.route('/journal_entries', methods=['POST'])
 def create_entry():
     data = request.get_json()

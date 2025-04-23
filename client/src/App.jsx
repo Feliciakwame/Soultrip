@@ -6,6 +6,7 @@ import Navbar from "./Components/Navbar";
 import Journal from "./Components/Journal";
 import Profile from "./Components/Profile";
 import Safety from "./Components/Safety";
+import TrustedContacts from "./Components/TrustedContacts";
 import React from "react";
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/journal" element={<Journal />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/safety" element={<Safety />} />
+        <Route path="/trusted-contacts" element={<TrustedContacts />} />
       </Routes>
     </Router>
   );

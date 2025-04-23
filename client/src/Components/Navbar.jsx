@@ -4,13 +4,33 @@ import React from "react";
 
 function Navbar() {
   return (
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/login">Login</Link>
-      <Link to="/signup">Sign Up</Link>
-      <Link to="/profile">Profile</Link>
-      <Link to="/journal">Journal</Link>
-      <Link to="/safety">Safety</Link>
+    <nav className="navbar">
+      <div className="navbar-logo">
+        <Link to="/">🌍 SoulTrip</Link>
+      </div>
+      <ul className="navbar-links">
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+        <li>
+          <Link to="/signup">Sign Up</Link>
+        </li>
+        <li>
+          <Link to="/profile">Profile</Link>
+        </li>
+        <li>
+          <Link to="/journal">Journal</Link>
+        </li>
+        <li>
+          <Link to="/safety">Safety</Link>
+        </li>
+        <li>
+          <Link to="/trusted-contacts">Trusted Contacts</Link>
+        </li>
+      </ul>
     </nav>
   );
 }

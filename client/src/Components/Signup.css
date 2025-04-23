@@ -1,4 +1,3 @@
-/* client/src/components/auth/Auth.css */
 .auth-container {
   max-width: 400px;
   margin: 2rem auto;
@@ -33,7 +32,7 @@
 
 .form-group input {
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid #a88989;
   border-radius: 4px;
   font-size: 1rem;
 }
@@ -44,7 +43,7 @@
 }
 
 .input-error {
-  border-color: #ff4d4f !important;
+  border-color: #ff4d4f;
 }
 
 .error-message {
@@ -53,7 +52,7 @@
 }
 
 .auth-button {
-  background-color: #646cff;
+  background-color: #ec92d9;
   color: white;
   padding: 0.75rem;
   border: none;
@@ -64,7 +63,7 @@
 }
 
 .auth-button:hover {
-  background-color: #5555e8;
+  background-color: #e855e1;
 }
 
 .auth-footer {

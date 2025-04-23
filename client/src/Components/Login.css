@@ -1,4 +1,3 @@
-/* client/src/components/auth/Login.css */
 .login-container {
   display: flex;
   justify-content: center;
@@ -76,7 +75,7 @@
 }
 
 .login-button {
-  background-color: #4299e1;
+  background-color: #bf3fc4;
   color: white;
   padding: 12px;
   border: none;
@@ -89,7 +88,7 @@
 }
 
 .login-button:hover {
-  background-color: #3182ce;
+  background-color: #dc83ee;
 }
 
 .login-footer {
@@ -100,7 +99,7 @@
 }
 
 .auth-link {
-  color: #4299e1;
+  color: #3b52d6;
   text-decoration: none;
   font-weight: 500;
 }
