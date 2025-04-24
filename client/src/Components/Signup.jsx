@@ -1,16 +1,17 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signupUser } from "../api/soultripAPI";
 import "./Signup.css";
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
+
   const validate = () => {
     const newErrors = {};
     if (!formData.username) newErrors.username = "Username is required please";
@@ -22,11 +23,12 @@ export default function Signup() {
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be atleast 6 characters";
+      newErrors.password = "Password must be at least 6 characters";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -38,6 +40,7 @@ export default function Signup() {
       setErrors({ api: err.response?.data?.error || "Signup failed" });
     }
   };
+
   return (
     <div className="auth-container">
       <h2>Create Your Account</h2>
@@ -58,6 +61,23 @@ export default function Signup() {
             <span className="error-message">{errors.username}</span>
           )}
         </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+            className={errors.email ? "input-error" : ""}
+          />
+          {errors.email && (
+            <span className="error-message">{errors.email}</span>
+          )}
+        </div>
+
         <div className="form-group">
           <label htmlFor="password">Password</label>
           <input
@@ -73,12 +93,13 @@ export default function Signup() {
             <span className="error-message">{errors.password}</span>
           )}
         </div>
+
         <button type="submit" className="auth-button">
           Sign up
         </button>
       </form>
       <p className="auth-footer">
-        Already have an account? <a href="/login">Login in</a>
+        Already have an account? <a href="/login">Login</a>
       </p>
     </div>
   );

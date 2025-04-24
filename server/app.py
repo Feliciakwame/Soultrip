@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_login import LoginManager
 from config import Config
 from models.models import db, User
@@ -11,6 +12,7 @@ from routes.locations import locations_bp
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)  # This allows all domains by default
     app.config.from_object(Config)
     
     # Initialize extensions

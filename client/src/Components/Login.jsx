@@ -1,12 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/soultripAPI";
 import "./Login.css";
-import React from "react";
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
@@ -14,7 +13,7 @@ export default function Login() {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.username) newErrors.username = "Username is required";
     if (!formData.password) newErrors.password = "Password is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -25,7 +24,7 @@ export default function Login() {
     if (!validate()) return;
 
     try {
-      const response = await loginUser(formData);
+      const response = await loginUser(formData); // backend should expect { username, password }
       localStorage.setItem("authToken", response.data.token);
       navigate("/dashboard");
     } catch (err) {
@@ -42,19 +41,21 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label htmlFor="email" className="input-label">
-              Email
+            <label htmlFor="username" className="input-label">
+              Username
             </label>
             <input
-              id="email"
-              type="email"
-              className={`login-input ${errors.email ? "input-error" : ""}`}
-              value={formData.email}
+              id="username"
+              type="text"
+              className={`login-input ${errors.username ? "input-error" : ""}`}
+              value={formData.username}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setFormData({ ...formData, username: e.target.value })
               }
             />
-            {errors.email && <span className="error-text">{errors.email}</span>}
+            {errors.username && (
+              <span className="error-text">{errors.username}</span>
+            )}
           </div>
 
           <div className="form-group">
