@@ -27,3 +27,10 @@ Features
 
 # Database
 	•	PostgreSQL or SQLite (dev)
+
+Installation
+
+Backend Setup
+	1.	Clone the rep
+git clone https://github.com/yourusername/soultrip.git
+cd soultrip/backend
