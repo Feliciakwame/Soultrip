@@ -1,12 +1,13 @@
 import axios from "axios";
+
+const baseURL = "http://localhost:5000/api";
+
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
 });
-export const loginUser = (credentials) => api.post("/login", credentials);
-export const signupUser = (userData) => api.post("/signup", userData);
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken");
@@ -15,4 +16,15 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+export async function loginUser(userData) {
+  const response = await api.post("/login", userData);
+  return response.data;
+}
+
+export async function signupUser(userData) {
+  const response = await api.post("/signup", userData);
+  return response.data;
+}
+
 export default api;

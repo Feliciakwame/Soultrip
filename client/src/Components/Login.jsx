@@ -6,6 +6,7 @@ import "./Login.css";
 export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
@@ -15,6 +16,7 @@ export default function Login() {
     const newErrors = {};
     if (!formData.username) newErrors.username = "Username is required";
     if (!formData.password) newErrors.password = "Password is required";
+    if (!formData.email) newErrors.email = "Email is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -24,9 +26,12 @@ export default function Login() {
     if (!validate()) return;
 
     try {
-      const response = await loginUser(formData); // backend should expect { username, password }
-      localStorage.setItem("authToken", response.data.token);
-      navigate("/dashboard");
+      const response = await loginUser(formData);
+      const { token, user } = response.data;
+
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("userId", user.id);
+      navigate(`/profile/${user.id}`);
     } catch (err) {
       setErrors({ api: "Invalid credentials. Please try again." });
     }

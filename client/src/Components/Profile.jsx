@@ -1,29 +1,39 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 import "./Profile.css";
 
 function Profile() {
   const [user, setUser] = useState({
-    name: "",
+    username: "",
     email: "",
-    avatar: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
 
   useEffect(() => {
-    fetch("/profile")
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.error) {
-          setUser(data);
-          setEditedUser(data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-  }, []); // ← Don't forget the empty dependency array
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const decoded = jwtDecode(token);
+        const userId = decoded.sub || decoded.id;
+        const response = await axios.get(
+          `http://localhost:5000/api/users/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(response.data);
+        setEditedUser(response.data);
+      } catch (err) {
+        console.log("Error fetching your profile", err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -34,20 +44,25 @@ function Profile() {
     setEditedUser({ ...editedUser, [name]: value });
   };
 
-  const handleSave = () => {
-    fetch("/profile", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(editedUser),
-    })
-      .then((res) => res.json())
-      .then((updatedUser) => {
-        setUser(updatedUser);
-        setIsEditing(false);
-      })
-      .catch((err) => console.log("Error saving your profile", err));
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const decoded = jwtDecode(token);
+      const userId = decoded.sub || decoded.id;
+      const response = await axios.patch(
+        `http://localhost:5000/api/users/${userId}`,
+        editedUser,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUser(response.data);
+      setIsEditing(false);
+    } catch (err) {
+      console.log("Error saving your profile", err);
+    }
   };
 
   return (

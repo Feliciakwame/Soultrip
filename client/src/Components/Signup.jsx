@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { signupUser } from "../api/soultripAPI";
 import "./Signup.css";
 
 export default function Signup() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
@@ -34,10 +35,26 @@ export default function Signup() {
     if (!validate()) return;
 
     try {
-      await signupUser(formData);
-      navigate("/login");
+      const response = await signupUser(formData);
+      console.log("Signup response:", response);
+
+      const data = await response.json();
+      const { token } = data;
+
+      if (!token) {
+        throw new Error("No token received");
+      }
+
+      localStorage.setItem("authToken", token);
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.id || decoded.sub;
+
+      localStorage.setItem("userId", userId);
+      navigate(`/profile/${userId}`);
     } catch (err) {
-      setErrors({ api: err.response?.data?.error || "Signup failed" });
+      console.error("Signup error:", err);
+      setErrors({ api: "Signup failed. Please try again." });
     }
   };
 
