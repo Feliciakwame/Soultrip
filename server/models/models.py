@@ -13,7 +13,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relationships
+    
     trips = db.relationship('Trip', backref='user', lazy=True)
     journal_entries = db.relationship('JournalEntry', backref='user', lazy=True)
     trusted_contacts = db.relationship('TrustedContact', backref='user', lazy=True)
@@ -45,6 +45,7 @@ class JournalEntry(db.Model):
             "id": self.id,
             "title": self.title,
             "content": self.content,
+            "user_id": self.user_id,
             "created_at": self.created_at.strftime('%Y-%m-%d') if self.created_at else None,
         }
     

@@ -49,3 +49,26 @@ button {
 button:hover {
   background-color: #ff9dbd;
 }
+
+.profile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.profile-links a {
+  text-decoration: none;
+  background-color: #f4a7b9;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.profile-links a:hover {
+  background-color: #ff9dbd;
+}

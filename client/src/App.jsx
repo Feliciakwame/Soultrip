@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
 import Homepage from "./Components/Homepage";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
@@ -17,10 +16,10 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/journal" element={<Journal />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/safety" element={<Safety />} />
-        <Route path="/trusted-contacts" element={<TrustedContacts />} />
+        <Route path="/journal/:id" element={<Journal />} />
+        <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/safety/:id" element={<Safety />} />
+        <Route path="/trusted-contacts/:id" element={<TrustedContacts />} />
       </Routes>
     </Router>
   );

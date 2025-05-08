@@ -7,11 +7,12 @@ import datetime
 
 auth_bp = Blueprint('auth', __name__)
 
-SECRET_KEY = 'your-secret-key'  
+SECRET_KEY = 'your-secret-key'  # Replace with a secure key in production
 
 @auth_bp.route('/api/signup', methods=['POST'])
 def signup():
     data = request.get_json()
+    print("Received JSON:", data)
 
     if not data or not data.get('username') or not data.get('email') or not data.get('password'):
         return jsonify({'error': 'Missing required fields'}), 400
@@ -30,7 +31,6 @@ def signup():
 
     login_user(user, remember=True)
 
-    
     token = jwt.encode({
         'id': user.id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
@@ -81,9 +81,18 @@ def logout():
 
 @auth_bp.route('/api/profile', methods=['GET'])
 @login_required
-def profile():
+def get_profile():
     return jsonify({
         'id': current_user.id,
         'username': current_user.username,
         'email': current_user.email
+    }), 200
+
+@auth_bp.route('/api/profile/<int:user_id>', methods=['GET'])
+def get_user_profile(user_id):
+    user = User.query.get_or_404(user_id)
+    return jsonify({
+        'id': user.id,
+        'username': user.username,
+        'email': user.email
     }), 200

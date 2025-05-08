@@ -13,12 +13,12 @@ journal_bp = Blueprint('journal', __name__)
 def create_journal_entry():
     data = request.get_json()
     
-    # Validate request data
+    # Valid
     if not data or not all(k in data for k in ('title', 'content')):
         return jsonify({'error': 'Missing required fields'}), 400
     
     try:
-        # Create journal entry
+    
         entry = JournalEntry(
             title=data['title'],
             content=data['content'],
@@ -40,7 +40,7 @@ def create_journal_entry():
 @journal_bp.route('/api/journal', methods=['GET'])
 @login_required
 def get_journal_entries():
-    # Optional query parameters for filtering
+
     limit = request.args.get('limit', type=int)
     
     query = JournalEntry.query.filter_by(user_id=current_user.id).order_by(JournalEntry.created_at.desc())

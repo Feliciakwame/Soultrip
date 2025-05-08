@@ -34,16 +34,11 @@ export default function Signup() {
     e.preventDefault();
     if (!validate()) return;
 
+    console.log("🚀 Submitting signup data:", formData);
+
     try {
       const response = await signupUser(formData);
-      console.log("Signup response:", response);
-
-      const data = await response.json();
-      const { token } = data;
-
-      if (!token) {
-        throw new Error("No token received");
-      }
+      const { token } = response.data;
 
       localStorage.setItem("authToken", token);
 
@@ -54,6 +49,9 @@ export default function Signup() {
       navigate(`/profile/${userId}`);
     } catch (err) {
       console.error("Signup error:", err);
+      if (err.response) {
+        console.error("Backend says:", err.response.data);
+      }
       setErrors({ api: "Signup failed. Please try again." });
     }
   };

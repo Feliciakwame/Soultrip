@@ -18,13 +18,15 @@ api.interceptors.request.use((config) => {
 });
 
 export async function loginUser(userData) {
-  const response = await api.post("/login", userData);
-  return response.data;
+  return await axios.post(`${baseURL}/login`, userData);
 }
 
-export async function signupUser(userData) {
-  const response = await api.post("/signup", userData);
-  return response.data;
-}
+export const signupUser = (formData) => {
+  return axios.post("http://localhost:5000/api/signup", formData, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 
 export default api;
