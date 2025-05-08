@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Safety.css";
+import LocationMap from "./LocationMap"; // Make sure this is properly implemented!
 
 export default function Safety() {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
@@ -36,7 +37,6 @@ export default function Safety() {
   const handleShare = () => {
     if (location.latitude && location.longitude) {
       console.log("Sending location to trusted contact...");
-      // You’d replace this with a real API call
       setShared(true);
       setTimeout(() => setShared(false), 3000);
     } else {
@@ -57,10 +57,22 @@ export default function Safety() {
               Latitude: <span>{location.latitude.toFixed(5)}</span> <br />
               Longitude: <span>{location.longitude.toFixed(5)}</span>
             </p>
+
+            {/* Show Location Map */}
+            <div className="map-container">
+              <LocationMap
+                latitude={location.latitude}
+                longitude={location.longitude}
+              />
+            </div>
+
             <button className="share-button" onClick={handleShare}>
               📤 Share My Location
             </button>
             {shared && <p className="shared-confirm">Location shared ✅</p>}
+            <p className="note-text">
+              Your location is live and may be visible to your trusted contacts.
+            </p>
           </>
         ) : (
           <p className="loading-text">Fetching location...</p>

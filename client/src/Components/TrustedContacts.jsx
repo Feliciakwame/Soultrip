@@ -1,31 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./TrustedContacts.css";
-import LocationMap from "./LocationMap";
 
 export default function TrustedContacts() {
   const [contacts, setContacts] = useState([]);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
   const [editingIndex, setEditingIndex] = useState(null);
-  const [location, setLocation] = useState({ latitude: null, longitude: null });
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          setLocation({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-          });
-        },
-        (err) => {
-          console.error("Location error:", err);
-        },
-        { enableHighAccuracy: true }
-      );
-
-      return () => navigator.geolocation.clearWatch(watchId);
-    }
-  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -64,15 +43,14 @@ export default function TrustedContacts() {
       return;
     }
 
-    if (!location.latitude || !location.longitude) {
-      alert("Location not available.");
-      return;
-    }
+    // Dummy location for demonstration
+    const latitude = 0.3031;
+    const longitude = 36.08;
 
     contacts.forEach((contact) => {
       console.log(`Sharing location with ${contact.name}`);
       console.log(
-        `Send to ${contact.email}: I'm here 👉 https://maps.google.com/?q=${location.latitude},${location.longitude}`
+        `Send to ${contact.email}: I'm here 👉 https://maps.google.com/?q=${latitude},${longitude}`
       );
     });
 
@@ -81,7 +59,7 @@ export default function TrustedContacts() {
 
   return (
     <div className="trusted-container">
-      <h2>Trusted Contacts</h2>
+      <h2>👯‍♀️ Trusted Contacts</h2>
       <form onSubmit={handleAddOrUpdate} className="trusted-form">
         <input
           name="name"
@@ -133,12 +111,8 @@ export default function TrustedContacts() {
       </ul>
 
       <button onClick={shareLocation} className="share-location-btn">
-        📍 Share My Location
+        📤 Share My Location
       </button>
-      <div className="map-section">
-        <h3>🗺️ Your Location on the map</h3>
-        <LocationMap />
-      </div>
     </div>
   );
 }

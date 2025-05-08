@@ -1,3 +1,10 @@
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  background-color: #fff;
+  color: #333;
+  line-height: 1.6;
+}
 .profile-container {
   padding: 20px;
   max-width: 600px;
@@ -5,11 +12,14 @@
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Poppins", sans-serif;
 }
 
 .profile-container h2 {
   text-align: center;
   color: #f4a7b9;
+  font-size: 26px;
+  margin-bottom: 20px;
 }
 
 .profile-details {
@@ -35,6 +45,7 @@
   margin: 10px 0;
   border-radius: 5px;
   border: 1px solid #ddd;
+  font-size: 15px;
 }
 
 button {
@@ -44,6 +55,10 @@ button {
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  margin: 10px 5px 0 0;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 10px 5px 0 0;
 }
 
 button:hover {
@@ -53,7 +68,8 @@ button:hover {
 .profile-links {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  align-items: center;
+  gap: 12px;
   margin-top: 30px;
 }
 
@@ -61,14 +77,18 @@ button:hover {
   text-decoration: none;
   background-color: #f4a7b9;
   color: white;
-  padding: 12px 20px;
-  border-radius: 6px;
+  padding: 10px 24px;
+  border-radius: 8px;
   text-align: center;
   font-size: 16px;
   font-weight: 500;
-  transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .profile-links a:hover {
   background-color: #ff9dbd;
+  transform: translateY(-1px);
 }
