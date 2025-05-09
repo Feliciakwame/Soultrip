@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Safety.css";
-import LocationMap from "./LocationMap"; // Make sure this is properly implemented!
+import LocationMap from "./LocationMap";
 
-export default function Safety() {
+export default function Safety({ contacts }) {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [error, setError] = useState("");
   const [shared, setShared] = useState(false);
@@ -23,7 +23,7 @@ export default function Safety() {
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 30000,
           maximumAge: 0,
         }
       );
@@ -34,13 +34,37 @@ export default function Safety() {
     }
   }, []);
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (location.latitude && location.longitude) {
-      console.log("Sending location to trusted contact...");
-      setShared(true);
-      setTimeout(() => setShared(false), 3000);
+      if (!contacts || contacts.length === 0) {
+        alert("No trusted contacts available!");
+        return;
+      }
+
+      try {
+        const emailList = contacts.map((c) => c.email);
+        const response = await fetch("http://localhost:5000/send-location", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contacts,
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }),
+        });
+
+        if (!response.ok) throw new Error("Failed to send location");
+
+        setShared(true);
+        setTimeout(() => setShared(false), 3000);
+      } catch (error) {
+        alert("Error sending location via email.");
+        console.error(error);
+      }
     } else {
-      alert("Location not available yet!");
+      alert("Location not available yet.");
     }
   };
 
@@ -58,7 +82,6 @@ export default function Safety() {
               Longitude: <span>{location.longitude.toFixed(5)}</span>
             </p>
 
-            {/* Show Location Map */}
             <div className="map-container">
               <LocationMap
                 latitude={location.latitude}

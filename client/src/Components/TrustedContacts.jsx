@@ -1,39 +1,108 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./TrustedContacts.css";
 
 export default function TrustedContacts() {
   const [contacts, setContacts] = useState([]);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      console.error("No authentication token found.");
+      return;
+    }
+
+    fetch("http://localhost:5000/api/contacts", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => setContacts(data))
+      .catch((err) => console.error("Error fetching contacts:", err));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleAddOrUpdate = (e) => {
+  const handleAddOrUpdate = async (e) => {
     e.preventDefault();
-    if (editingIndex !== null) {
-      const updated = [...contacts];
-      updated[editingIndex] = formData;
-      setContacts(updated);
-      setEditingIndex(null);
-    } else {
-      setContacts([...contacts, formData]);
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setErrorMessage("No authentication token found.");
+      return;
     }
-    setFormData({ name: "", phone: "", email: "" });
-  };
 
-  const handleEdit = (index) => {
-    setFormData(contacts[index]);
-    setEditingIndex(index);
-  };
+    const url =
+      editingId !== null
+        ? `http://localhost:5000/api/contacts/${editingId}`
+        : "http://localhost:5000/api/contacts";
 
-  const handleDelete = (index) => {
-    const updated = contacts.filter((_, i) => i !== index);
-    setContacts(updated);
-    if (editingIndex === index) {
+    const method = editingId !== null ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      if (editingId !== null) {
+        setContacts((prev) =>
+          prev.map((c) => (c.id === result.id ? result : c))
+        );
+      } else {
+        setContacts((prev) => [...prev, result]);
+      }
       setFormData({ name: "", phone: "", email: "" });
-      setEditingIndex(null);
+      setEditingId(null);
+      setErrorMessage("");
+    } else {
+      setErrorMessage("Failed to save contact.");
+    }
+  };
+
+  const handleEdit = (contact) => {
+    setFormData({
+      name: contact.name,
+      phone: contact.phone,
+      email: contact.email,
+    });
+    setEditingId(contact.id);
+  };
+
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setErrorMessage("No authentication token found.");
+      return;
+    }
+
+    const response = await fetch(`http://localhost:5000/api/contacts/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      setContacts((prev) => prev.filter((c) => c.id !== id));
+      setErrorMessage("");
+    } else {
+      setErrorMessage("Failed to delete contact.");
     }
   };
 
@@ -43,7 +112,6 @@ export default function TrustedContacts() {
       return;
     }
 
-    // Dummy location for demonstration
     const latitude = 0.3031;
     const longitude = 36.08;
 
@@ -60,6 +128,10 @@ export default function TrustedContacts() {
   return (
     <div className="trusted-container">
       <h2>👯‍♀️ Trusted Contacts</h2>
+
+      {/* Error message */}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
       <form onSubmit={handleAddOrUpdate} className="trusted-form">
         <input
           name="name"
@@ -83,24 +155,24 @@ export default function TrustedContacts() {
           required
         />
         <button type="submit">
-          {editingIndex !== null ? "Update Contact" : "Add Contact"}
+          {editingId !== null ? "Update Contact" : "Add Contact"}
         </button>
       </form>
 
       <ul className="trusted-list">
-        {contacts.map((c, index) => (
-          <li key={index}>
+        {contacts.map((contact) => (
+          <li key={contact.id}>
             <div className="contact-details">
-              <strong>{c.name}</strong> <br />
-              📞 {c.phone} <br />
-              📧 {c.email}
+              <strong>{contact.name}</strong> <br />
+              📞 {contact.phone} <br />
+              📧 {contact.email}
             </div>
             <div className="contact-actions">
-              <button onClick={() => handleEdit(index)} className="edit-btn">
+              <button onClick={() => handleEdit(contact)} className="edit-btn">
                 ✏️ Edit
               </button>
               <button
-                onClick={() => handleDelete(index)}
+                onClick={() => handleDelete(contact.id)}
                 className="delete-btn"
               >
                 🗑️ Delete

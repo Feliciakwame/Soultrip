@@ -4,10 +4,33 @@ from werkzeug.security import check_password_hash
 from models.models import User, db
 import jwt
 import datetime
+from werkzeug.exceptions import Unauthorized
 
 auth_bp = Blueprint('auth', __name__)
 
-SECRET_KEY = 'your-secret-key'  # Replace with a secure key in production
+SECRET_KEY = 'your-secret-key'  
+
+def token_required(f):
+    def decorated(*args, **kwargs):
+        token = None
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(" ")[1]
+            
+        if not token:
+            raise Unauthorized('Token is missing!')
+        
+        try:
+            data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+            current_user = User.query.get(data['id'])
+            if not current_user:
+                raise Unauthorized('Invalid token!')
+        except jwt.ExpiredSignatureError:
+            raise Unauthorized('Token has expired!')
+        except jwt.InvalidTokenError:
+            raise Unauthorized('Invalid token!')
+        
+        return f(current_user, *args, **kwargs)
+    return decorated
 
 @auth_bp.route('/api/signup', methods=['POST'])
 def signup():
@@ -80,7 +103,7 @@ def logout():
     return jsonify({'message': 'Logged out successfully'}), 200
 
 @auth_bp.route('/api/profile', methods=['GET'])
-@login_required
+@token_required
 def get_profile():
     return jsonify({
         'id': current_user.id,

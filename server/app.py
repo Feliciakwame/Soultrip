@@ -1,4 +1,6 @@
 from flask import Flask
+from flask import jsonify
+from flask_login import login_required
 from flask_cors import CORS
 from flask_login import LoginManager
 from config import Config
@@ -14,18 +16,18 @@ from routes.profile import profile_bp
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, supports_credentials=True)  
+    CORS(app)  
     app.config.from_object(Config)
     
     
     db.init_app(app)
     
-    login_manager = LoginManager(app)
-    login_manager.login_view = 'auth.login'
+    login_manager = LoginManager()
+    login_manager.init_app(app)
     
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        return jsonify({'error': 'Unauthorized access'}), 401
     
     
     app.register_blueprint(auth_bp)

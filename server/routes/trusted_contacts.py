@@ -4,78 +4,77 @@ from flask_login import login_required, current_user
 from models.models import db, TrustedContact
 from sqlalchemy.exc import SQLAlchemyError
 import re
+import phonenumbers
 
 contacts_bp = Blueprint('contacts', __name__)
 
-# Helper function to validate email format
+# Email validation
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return bool(re.match(pattern, email))
 
-# Helper function to validate phone format
+
 def is_valid_phone(phone):
-    # Accept digits, spaces, dashes, parentheses, and plus sign
-    pattern = r'^[0-9\s\-\(\)\+]+$'
-    return bool(re.match(pattern, phone)) and len(re.sub(r'[^\d]', '', phone)) >= 7
+    try:
+        parsed = phonenumbers.parse(phone, None)
+        return phonenumbers.is_valid_number(parsed)
+    except phonenumbers.NumberParseException:
+        return False
 
-# ----- TRUSTED CONTACTS ROUTES -----
-
+# Create a new contact
 @contacts_bp.route('/api/contacts', methods=['POST'])
 @login_required
 def create_contact():
-    data = request.get_json()
-    
-    # Validate request data
-    if not data or not all(k in data for k in ('name', 'email', 'phone')):
-        return jsonify({'error': 'Missing required fields'}), 400
-    
-    # Validate email format
-    if not is_valid_email(data['email']):
-        return jsonify({'error': 'Invalid email format'}), 400
-    
-    # Validate phone number
-    if not is_valid_phone(data['phone']):
-        return jsonify({'error': 'Invalid phone number format'}), 400
-    
     try:
-        # Create trusted contact
-        contact = TrustedContact(
-            name=data['name'],
-            email=data['email'],
-            phone=data['phone'],
-            user_id=current_user.id
-        )
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        name = data.get('name')
+        email= data.get('email')
+        phone= data.get('phone')
         
-        db.session.add(contact)
+        if not name or not email or not phone:
+            return jsonify({'error': 'Missing required fields'}), 400
+        
+        new_contact = TrustedContact(name=name, email=email, phone=phone, user_id=current_user.id)
+        db.session.add(new_contact)
         db.session.commit()
         
         return jsonify({
-            'message': 'Contact added successfully',
+            'message': 'Contact created successfully',
             'contact': {
-                'id': contact.id,
-                'name': contact.name,
-                'email': contact.email,
-                'phone': contact.phone
+                'id': new_contact.id,
+                'name': new_contact.name,
+                'email': new_contact.email,
+                'phone': new_contact.phone
             }
         }), 201
         
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        return jsonify({'error': f'Database error: {str(e)}'}), 500
+    except Exception as e:
+        print("❌ Error in POST /api/contacts:", e)
+        return jsonify({'error':"Server error"}),500
 
 @contacts_bp.route('/api/contacts', methods=['GET'])
 @login_required
 def get_contacts():
-    contacts = TrustedContact.query.filter_by(user_id=current_user.id).all()
-    
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    pagination = TrustedContact.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=per_page)
+    contacts = pagination.items
+
     return jsonify({
         'contacts': [{
             'id': contact.id,
             'name': contact.name,
             'email': contact.email,
             'phone': contact.phone
-        } for contact in contacts]
+        } for contact in contacts],
+        'total': pagination.total,
+        'page': pagination.page,
+        'pages': pagination.pages
     }), 200
+
 
 @contacts_bp.route('/api/contacts/<int:contact_id>', methods=['GET'])
 @login_required
@@ -92,6 +91,7 @@ def get_contact(contact_id):
         'phone': contact.phone
     }), 200
 
+
 @contacts_bp.route('/api/contacts/<int:contact_id>', methods=['PUT'])
 @login_required
 def update_contact(contact_id):
@@ -105,7 +105,6 @@ def update_contact(contact_id):
         return jsonify({'error': 'No data provided'}), 400
     
     try:
-        # Update fields if provided
         if 'name' in data:
             contact.name = data['name']
         
@@ -135,6 +134,7 @@ def update_contact(contact_id):
         db.session.rollback()
         return jsonify({'error': f'Database error: {str(e)}'}), 500
 
+
 @contacts_bp.route('/api/contacts/<int:contact_id>', methods=['DELETE'])
 @login_required
 def delete_contact(contact_id):
@@ -156,8 +156,6 @@ def delete_contact(contact_id):
 @contacts_bp.route('/api/contacts/search', methods=['GET'])
 @login_required
 def search_contacts():
-    """Search contacts by name or email"""
-    
     query = request.args.get('query', '')
     if not query or len(query) < 2:
         return jsonify({'error': 'Search query must be at least 2 characters'}), 400
@@ -181,15 +179,15 @@ def search_contacts():
 @contacts_bp.route('/api/emergency/notify', methods=['POST'])
 @login_required
 def notify_emergency_contacts():
-    """
-    Endpoint to notify emergency contacts.
-    Returns data needed for EmailJS in the frontend.
-    """
     data = request.get_json() or {}
-    location = data.get('location', 'Unknown location')
+    location = data.get('location')
     message = data.get('message', 'Emergency alert')
     
-    # Get all trusted contacts for the current user
+    if not location:
+        return jsonify({'error': 'Location is required'}), 400
+    if not message:
+        return jsonify({'error': 'Message is required'}), 400
+
     contacts = TrustedContact.query.filter_by(user_id=current_user.id).all()
     
     if not contacts:
